@@ -1,8 +1,34 @@
-SELECT * FROM sale.sale;
+create database sales;
+
+use sales;
+
+create table sale(
+sale_id int primary key,
+product varchar(50),
+category varchar(50),
+quantity int,
+price decimal(10,2),
+region varchar(50),
+salesperson varchar(50),
+sale_date date);
+
+insert into sale(sale_id,product,category,quantity,price,region,salesperson,sale_date) values
+(1,"Laptop","Electroise",5,50000,"East","John","2024-01-05"),
+(2,"Mobile","Electroise",10,20000,"West","Mary","2024-01-10"),
+(3,"Chair","Furniture",20,1500,"East","John","2024-02-15"),
+(4,"Mobile","Furniture",8,5000,"North","Steve","2024-02-18"),
+(5,"Laptop","Electroise",7,55000,"South","Mary","2024-03-01"),
+(6,"Mobile","Electroise",15,18000,"East","John","2024-03-05"),
+(7,"Sofa","Furniture",3,25000,"West","Steve","2024-03-20"),
+(8,"Laptop","Electroise",2,25000,"North","Mary","2024-04-02"),
+(9,"Chair","Furniture",30,1200,"South","John","2024-04-12"),
+(10,"Mobile","Electroise",12,12000,"West","Steve","2024-04-15");
+
+select * from sale;
 
 # Q1 find total sales amount for each region.
 select region,
-sum(price) as total_sales
+sum(quantity*price) as total_sales
 from sale group by region;
 
 # Q2. find total quantity sold by each salesperson.
@@ -15,7 +41,7 @@ select category,
 sum(quantity) as total_quantity_sold
 from sale group by category having 
 sum(quantity)>30;
-use sale;
+
 # Q4. find total revenue by each category.
 select category,
 sum(quantity*price) as total_revenue
@@ -45,9 +71,9 @@ count(category) as total_category
 from sale group by product;
 
 # Q9. find total sales per month.
-select salesperson,month,
-sum(revenue) as total_sales
-from sale group by salesperson,month;
+select month(sale_date) as month,
+sum(quantity*price) as total_sales
+from sale group by month(sale_date);
 
 # Q10. find each region's maximum sale price.
 select region,
@@ -67,9 +93,8 @@ from sale group by region, category;
 
 # Q13. find how many sales each salesperson  made in each region.
 select salesperson,region,
-sum(price) as total_sales
-from sale group by salesperson,region order by 
-salesperson,region;
+count(*) as total_sales
+from sale group by salesperson,region;
 
 # Q14. find the region where total quantity sold exceeds 20.
 select region,
@@ -97,7 +122,7 @@ order by highest_price DESC limit 1;
 
 # Q18. find salesperson's average sale value per transaction.
 select salesperson,
-vag(price)  as avg_sale_value_per_transaction
+avg(price)  as avg_sale_value_per_transaction
 from sale group by salesperson;
 
 # Q19. find category with minimum average price greater than 20000.
@@ -111,8 +136,4 @@ select region,salesperson,
 sum(quantity*price) as total_revenue
 from sale group by region,salesperson having
 sum(quantity*price) > 200000;
-
-
-
-
 
